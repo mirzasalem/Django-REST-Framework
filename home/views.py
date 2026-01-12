@@ -1,12 +1,23 @@
 # from django.shortcuts import render
-
+from rest_framework.views import APIView
 # Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Person
-from home.serializers import PeopleSerializer
+from .models import Person , Country
+from home.serializers import PeopleSerializer, LoginSerializer
 
 # person.objects.all()
+@api_view([ 'POST'])
+def login(request):
+    data = request.data
+    serializer = LoginSerializer(data = data)
+    if serializer.is_valid():
+        data = serializer.validated_data
+        print(data)
+        return Response({'Messsage' : 'Success'})
+    return Response(serializer.errors)
+
+
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -32,7 +43,7 @@ def index(request):
 @api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
 def person(request):
     if request.method == 'GET':
-        object = Person.objects.all()
+        object = Person.objects.filter(country__isnull = False)
         serializer = PeopleSerializer(object , many = True)
         return Response(serializer.data)
     elif request.method == 'POST':
