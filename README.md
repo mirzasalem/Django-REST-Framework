@@ -120,13 +120,125 @@ Authorization: Token YOUR_TOKEN
 
 ---
 
-## ▶️ Run Project
+# ⚙️ Additional Project Configuration Documentation
 
-```bash
-pip install django djangorestframework
-python manage.py migrate
-python manage.py runserver
+This document describes **extra configurations** added to the Django project beyond the default setup.
+
+---
+
+## 🗄️ Database Configuration (MySQL)
+
+The project uses **MySQL** instead of SQLite.
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'course_db',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}
 ```
+
+### Requirements
+- MySQL Server installed and running
+- Database name: `course_db`
+- Python MySQL client:
+```bash
+pip install mysqlclient
+```
+
+---
+
+## 🔐 Django REST Framework Setup
+
+### Installed Apps
+```python
+INSTALLED_APPS = [
+    'rest_framework',
+    'rest_framework.authtoken',
+]
+```
+
+---
+
+### Authentication Configuration
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
+```
+
+- Supports Basic Authentication
+- Supports Session Authentication
+
+---
+
+### Permission Policy
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+```
+
+- APIs are publicly accessible by default
+- Individual views may override permissions
+
+---
+
+### Pagination
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
+```
+
+- Pagination enabled using LimitOffsetPagination
+- Default page size: 100
+
+---
+
+## 🧪 Development Settings
+
+```python
+DEBUG = True
+```
+
+⚠️ Debug mode is enabled for development only.
+
+---
+
+## 🔐 Security Notes
+
+- `SECRET_KEY` is hardcoded for development
+- `ALLOWED_HOSTS` is empty
+- Move sensitive data to environment variables for production
+
+---
+
+## ⚠️ Important Note
+
+Multiple `REST_FRAMEWORK` configurations exist in `settings.py`.  
+They should be **merged into a single dictionary** in production.
+
+---
+
+## 🚀 Recommended Improvements
+
+- Enable TokenAuthentication globally
+- Use `.env` file for secrets
+- Add Swagger / OpenAPI documentation
+- Add CORS support for frontend integration
 
 ---
 
